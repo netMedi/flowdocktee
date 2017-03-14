@@ -5,6 +5,14 @@ flow=""
 url="https://"$token"@api.flowdock.com/flows/"$org"/"$flow"/messages"
 me=$(basename "$0")
 
+function escape_string() {
+  local result=$(echo "$1" \
+    | sed 's/\\/\\\\/g' \
+    | sed 's/"/\\"/g' \
+    | sed "s/'/\\'/g")
+  echo "$result"
+}
+
 function err_exit() {
   exit_code=$1
   shift
@@ -31,8 +39,8 @@ function check_configuration() {
 
 function process_line() {
   echo "$1"
-  line="$1"
-  text="$line"
+  line=$(escape_string "$1")
+  text="$text\n$line"
 }
 
 function send_message() {
@@ -41,8 +49,8 @@ function send_message() {
     \"event\": \"message\", \
     \"content\": \"$message\" \
   }"
-  post_result=$(curl -H "Content-Type: application/json" -X POST -d \
-    "$json" "$url" 2> /dev/null)
+  # post_result=$(curl -H "Content-Type: application/json" -X POST -d \
+  #   "$json" "$url" 2> /dev/null)
   if [[ $? != "0" ]]; then
     err_exit 1 "$post_result"
   fi
