@@ -4,6 +4,7 @@ org=""
 flow=""
 url="https://"$token"@api.flowdock.com/flows/"$org"/"$flow"/messages"
 me=$(basename "$0")
+textWrapper="\`\`\`"
 
 function escape_string() {
   local result=$(echo "$1" \
@@ -40,17 +41,21 @@ function check_configuration() {
 function process_line() {
   echo "$1"
   line=$(escape_string "$1")
-  text="$text\n$line"
+  if [[ -z "$text" ]]; then
+    text="$line"
+  else
+    text="$text\n$line"
+  fi
 }
 
 function send_message() {
-  message="$1"
+  message="$textWrapper\n$1\n$textWrapper"
   json="{\
     \"event\": \"message\", \
     \"content\": \"$message\" \
   }"
-  # post_result=$(curl -H "Content-Type: application/json" -X POST -d \
-  #   "$json" "$url" 2> /dev/null)
+  post_result=$(curl -H "Content-Type: application/json" -X POST -d \
+    "$json" "$url" 2> /dev/null)
   if [[ $? != "0" ]]; then
     err_exit 1 "$post_result"
   fi
