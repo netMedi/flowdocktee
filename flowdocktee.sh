@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-token=""
-org=""
+api_token=""
 flow=""
-url="https://"$token"@api.flowdock.com/flows/"$org"/"$flow"/messages"
+organization=""
+url="https://"$api_token"@api.flowdock.com/flows/"$organization"/"$flow"/messages"
 me=$(basename "$0")
 textWrapper="\`\`\`"
 
@@ -36,6 +36,18 @@ function check_configuration() {
   if [[ -z $(command -v curl) ]]; then
     err_exit 1 "curl is not installed. Please install it first"
   fi
+
+  if [[ $api_token == "" ]]; then
+    err_exit 1 "Pleace specify api_token"
+  fi
+
+  if [[ $flow == "" ]]; then
+    err_exit 1 "Pleace specify flow"
+  fi
+
+  if [[ $organization == "" ]]; then
+    err_exit 1 "Pleace specify organization"
+  fi
 }
 
 function process_line() {
@@ -54,8 +66,10 @@ function send_message() {
     \"event\": \"message\", \
     \"content\": \"$message\" \
   }"
-  post_result=$(curl -H "Content-Type: application/json" -X POST -d \
-    "$json" "$url" 2> /dev/null)
+  post_result=$(curl \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d "$json" "$url" 2> /dev/null)
   if [[ $? != "0" ]]; then
     err_exit 1 "$post_result"
   fi
@@ -64,7 +78,6 @@ function send_message() {
 function main() {
   parse_arguments "$@"
   check_configuration
-  trap cleanup SIGINT SIGTERM SIGKILL
 
   text=""
   while IFS='' read -r line; do
