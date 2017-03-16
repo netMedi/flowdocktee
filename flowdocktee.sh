@@ -2,7 +2,6 @@
 api_token=""
 flow=""
 organization=""
-url="https://"$api_token"@api.flowdock.com/flows/"$organization"/"$flow"/messages"
 me=$(basename "$0")
 textWrapper="\`\`\`"
 
@@ -26,6 +25,11 @@ function parse_arguments() {
     opt=$1
     shift
     case "$opt" in
+      --config)
+        CONFIG=$1
+        echo $1
+        shift
+        ;;
       *)
         err_exit 1 "illegal option $opt"
     esac
@@ -47,6 +51,10 @@ function check_configuration() {
 
   if [[ $organization == "" ]]; then
     err_exit 1 "Pleace specify organization"
+  fi
+
+  if [[ $url == "" ]]; then
+    err_exit 1 "url is malformed"
   fi
 }
 
@@ -75,8 +83,16 @@ function send_message() {
   fi
 }
 
+function setup_environment() {
+  if [[ -e "$CONFIG" ]]; then
+    . $CONFIG
+  fi
+  url="https://"$api_token"@api.flowdock.com/flows/"$organization"/"$flow"/messages"
+}
+
 function main() {
   parse_arguments "$@"
+  setup_environment
   check_configuration
 
   text=""
