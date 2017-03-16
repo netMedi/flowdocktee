@@ -41,10 +41,10 @@ function send() {
     \"event\": \"message\", \
     \"content\": \"$message\" \
   }"
-  result=$(curl \
+  curl \
     -H "Content-Type: application/json" \
     -X POST \
-    -d "$json" "$url" 2> /dev/null)
+    -d "$json" "$url" > /dev/null 2>&1
 }
 
 function set_environment() {
