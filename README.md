@@ -13,12 +13,13 @@ Flowdocktee needs [curl](https://curl.haxx.se/) to communicate with Flowdock.
 
 Clone the git repository
 ```
-$ enter command here
+$ git clone https://github.com/netMedi/flowdocktee.git
 ```
 
 Install `flowdocktee`.
 ```
-$ enter command here
+$ chmod -x install.sh
+$ ./install.sh
 ```
 
 After installation copy the `flowdocktee.conf.sample` to `$HOME/.flowdocktee`
