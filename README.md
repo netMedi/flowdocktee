@@ -52,3 +52,6 @@ $ echo "Hello world" | flowdocktee
 ```
 $ ls | flowdocktee | grep ".conf"
 ```
+
+In case of missconfiguration or error flowdocktee just fails silently as we
+want to pipe the input always instead of halting the subsequent commands.
