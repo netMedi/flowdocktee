@@ -2,7 +2,6 @@
 api_token=""
 flow=""
 organization=""
-me=$(basename "$0")
 textWrapper="\`\`\`"
 
 function escape_string() {
@@ -13,10 +12,10 @@ function escape_string() {
   echo "$result"
 }
 
-function err_exit() {
+function error() {
   exit_code=$1
   shift
-  echo "$me: $@" > /dev/null >&2
+  echo "flowdocktee: $@" > /dev/null >&2
   exit $exit_code
 }
 
@@ -27,30 +26,29 @@ function parse_arguments() {
     case "$opt" in
       --config)
         CONFIG=$1
-        echo $1
         shift
         ;;
       *)
-        err_exit 1 "illegal option $opt"
+        error 1 "illegal option $opt"
     esac
   done
 }
 
 function check_configuration() {
   if [[ -z $(command -v curl) ]]; then
-    err_exit 1 "curl is not installed. Please install it first"
+    error 1 "curl is not installed. Please install it first"
   fi
 
   if [[ $api_token == "" ]]; then
-    err_exit 1 "Pleace specify api_token"
+    error 1 "Pleace specify api_token"
   fi
 
   if [[ $flow == "" ]]; then
-    err_exit 1 "Pleace specify flow"
+    error 1 "Pleace specify flow"
   fi
 
   if [[ $organization == "" ]]; then
-    err_exit 1 "Pleace specify organization"
+    error 1 "Pleace specify organization"
   fi
 }
 
@@ -75,11 +73,11 @@ function send_message() {
     -X POST \
     -d "$json" "$url" 2> /dev/null)
   if [[ $? != "0" ]]; then
-    err_exit 1 "$post_result"
+    error 1 "$post_result"
   fi
 }
 
-function setup_environment() {
+function set_environment() {
   if [[ -n "$HOME" && -e "$HOME/.flowdocktee" ]]; then
     . "$HOME/.flowdocktee"
   fi
@@ -94,7 +92,7 @@ function set_url() {
 
 function main() {
   parse_arguments "$@"
-  setup_environment
+  set_environment
   check_configuration
   set_url
 
