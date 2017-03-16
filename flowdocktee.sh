@@ -52,10 +52,6 @@ function check_configuration() {
   if [[ $organization == "" ]]; then
     err_exit 1 "Pleace specify organization"
   fi
-
-  if [[ $url == "" ]]; then
-    err_exit 1 "url is malformed"
-  fi
 }
 
 function process_line() {
@@ -84,9 +80,15 @@ function send_message() {
 }
 
 function setup_environment() {
+  if [[ -n "$HOME" && -e "$HOME/.flowdocktee" ]]; then
+    . "$HOME/.flowdocktee"
+  fi
   if [[ -e "$CONFIG" ]]; then
     . $CONFIG
   fi
+}
+
+function set_url() {
   url="https://"$api_token"@api.flowdock.com/flows/"$organization"/"$flow"/messages"
 }
 
@@ -94,6 +96,7 @@ function main() {
   parse_arguments "$@"
   setup_environment
   check_configuration
+  set_url
 
   text=""
   while IFS='' read -r line; do
