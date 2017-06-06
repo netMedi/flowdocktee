@@ -21,6 +21,9 @@ function parse_arguments() {
         CONFIG=$1
         shift
         ;;
+      --notify)
+        NOTIFY=@team
+        ;;
     esac
   done
 }
@@ -36,7 +39,7 @@ function read_and_pipe_line() {
 }
 
 function send() {
-  message="$textWrapper\n$1\n$textWrapper"
+  message="$NOTIFY\n$textWrapper\n$1\n$textWrapper"
   json="{\
     \"event\": \"message\", \
     \"content\": \"$message\" \
