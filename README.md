@@ -41,9 +41,10 @@ the [messages endpoint](https://www.flowdock.com/api/messages) usage is encourag
 ## Usage
 
 ```
-usage: flowdoctee [options]
+usage: flowdocktee [options]
   options:
     --config        Specify the location ot the alternative configuration file.
+    --notify        Set this flag to prepend the chat message with @team
 ```
 
 ```
@@ -54,5 +55,5 @@ $ echo "Hello world" | flowdocktee
 $ ls | flowdocktee | grep ".conf"
 ```
 
-In case of missconfiguration or error flowdocktee just fails silently as we
+In case of misconfiguration or error flowdocktee just fails silently as we
 want to pipe the input always instead of halting the subsequent commands.
